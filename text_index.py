@@ -20,6 +20,8 @@ class TextIndex:
                 self.text_index[token].append(document_id)
 
     def query_index(self, term):
+        if term not in self.text_index:
+            return []
         return self.text_index[term]
 
     def save_index(self):

@@ -25,8 +25,8 @@ class Crawler:
     def pre_process(self, content):
         w = self.tokenizer.tokenize(content)
         w = [x.lower() for x in w]
-        w = self.remove_stopwords(self.stop_words, w)
-        self.stem_words(w)
+        # w = self.remove_stopwords(self.stop_words, w)
+        # self.stem_words(w)
         return w
 
     @staticmethod

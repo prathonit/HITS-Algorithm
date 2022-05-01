@@ -5,6 +5,7 @@ import config
 class Graph:
     def __init__(self):
         self.web_graph = nx.read_gpickle(config.GRAPH_DATASET_PATH)
+        self.count = len(self.web_graph.nodes)
         self.edges = self.web_graph.edges()
         self.adj_in = {}
         self.adj_out = {}
