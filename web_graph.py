@@ -3,6 +3,11 @@ import config
 
 
 class Graph:
+    """
+    Graph Class
+    A wrapper class around the networkx library
+    Loads the gpickle file and provides methods to access the graph.
+    """
     def __init__(self):
         self.web_graph = nx.read_gpickle(config.GRAPH_DATASET_PATH)
         self.count = len(self.web_graph.nodes)
@@ -18,4 +23,9 @@ class Graph:
             self.adj_in[edge[1]].append(edge[0])
 
     def get_content(self, node_id):
+        """
+        Get the content of document_id
+        :param node_id: Document ID
+        :return: Content of the document
+        """
         return self.web_graph.nodes[node_id]['page_content']
