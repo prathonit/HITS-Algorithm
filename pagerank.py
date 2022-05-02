@@ -2,7 +2,7 @@ import numpy as np
 from time import time
 
 class PageRank:
-    def __init__(self, graph, n_nodes, n_edges):
+    def __init__(self, graph, n_nodes, n_edges=None):
         """
         Given a graph with number of nodes and edges, perform the PageRank algorithm and return the scores.
 
@@ -19,7 +19,7 @@ class PageRank:
         self.n_edges = n_edges
         self.input_nodes = list(range(self.n_nodes))
 
-    def get_scores_iterative(self, alpha=0.85, epsilon=0.0000001):
+    def get_scores_iterative(self, alpha=0.1, epsilon=0.0000001):
         """
         Calculate the PageRank scores of all the nodes in the graph iteratively.
 
@@ -57,6 +57,40 @@ class PageRank:
 
         return pageRankScores
 
+    def getLeftEigenVector(self, P):
+        """
+        Calculate the left eigenvector of the matrix P.
+
+        Args:
+            P: Matrix of the graph.
+
+        Returns:
+            Left eigenvector of the matrix P.
+        """
+        values, Vector = np.linalg.eig(np.array(P).T)
+        left_vec = Vector[:, 0].T
+        left_vec_norm = (left_vec/left_vec.sum()).real
+        return left_vec_norm
+
+    def get_scores_eigen(self, alpha = 0.1):
+        """
+        Calculate the PageRank scores of all the nodes in the graph using the eigenvalue decomposition of the matrix.
+
+        Returns:
+            PageRank scores of all the nodes in the graph.
+        """
+        # Calculating Page Rank Scores
+        # P = self.graph / np.sum(self.graph, axis=0)
+
+        M = self.graph / np.sum(self.graph, axis=0)
+
+        M = M * (1 - alpha)
+        M = M + (alpha/self.n_nodes)
+
+        left_vec = self.getLeftEigenVector(M)
+        pageRankScores = left_vec / sum(left_vec)
+
+        return pageRankScores
 
 def get_input():
     """
@@ -84,14 +118,16 @@ def get_input():
 
 def main():
     """
-    Main function. Calls the get_input() and get_scores_iterative() functions and prints the PageRank scores and time taken.
+    Main function. Calls the get_input() and get_scores_iterative() functions and prints the PageRank scores.
     """
     graph, n_nodes, n_edges = get_input()
     start = time()
     pr = PageRank(graph, n_nodes, n_edges)
-    scores = pr.get_scores_iterative()
+    iter_scores = pr.get_scores_iterative()
+    eigen_scores = pr.get_scores_eigen()
     end = time()
-    print("PageRank scores: {} \nTime taken: {:.4f}s".format(scores, end - start))
+    print("Iterative PageRank scores: {}".format(iter_scores))
+    print("Eigen Value PageRank scores: {}".format(eigen_scores))
 
 if __name__ == '__main__':
     main()

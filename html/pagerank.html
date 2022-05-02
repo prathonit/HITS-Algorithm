@@ -30,7 +30,7 @@
 from time import time
 
 class PageRank:
-    def __init__(self, graph, n_nodes, n_edges):
+    def __init__(self, graph, n_nodes, n_edges=None):
         &#34;&#34;&#34;
         Given a graph with number of nodes and edges, perform the PageRank algorithm and return the scores.
 
@@ -47,7 +47,7 @@ class PageRank:
         self.n_edges = n_edges
         self.input_nodes = list(range(self.n_nodes))
 
-    def get_scores_iterative(self, alpha=0.85, epsilon=0.0000001):
+    def get_scores_iterative(self, alpha=0.1, epsilon=0.0000001):
         &#34;&#34;&#34;
         Calculate the PageRank scores of all the nodes in the graph iteratively.
 
@@ -85,6 +85,40 @@ class PageRank:
 
         return pageRankScores
 
+    def getLeftEigenVector(self, P):
+        &#34;&#34;&#34;
+        Calculate the left eigenvector of the matrix P.
+
+        Args:
+            P: Matrix of the graph.
+
+        Returns:
+            Left eigenvector of the matrix P.
+        &#34;&#34;&#34;
+        values, Vector = np.linalg.eig(np.array(P).T)
+        left_vec = Vector[:, 0].T
+        left_vec_norm = (left_vec/left_vec.sum()).real
+        return left_vec_norm
+
+    def get_scores_eigen(self, alpha = 0.1):
+        &#34;&#34;&#34;
+        Calculate the PageRank scores of all the nodes in the graph using the eigenvalue decomposition of the matrix.
+
+        Returns:
+            PageRank scores of all the nodes in the graph.
+        &#34;&#34;&#34;
+        # Calculating Page Rank Scores
+        # P = self.graph / np.sum(self.graph, axis=0)
+
+        M = self.graph / np.sum(self.graph, axis=0)
+
+        M = M * (1 - alpha)
+        M = M + (alpha/self.n_nodes)
+
+        left_vec = self.getLeftEigenVector(M)
+        pageRankScores = left_vec / sum(left_vec)
+
+        return pageRankScores
 
 def get_input():
     &#34;&#34;&#34;
@@ -112,14 +146,16 @@ def get_input():
 
 def main():
     &#34;&#34;&#34;
-    Main function. Calls the get_input() and get_scores_iterative() functions and prints the PageRank scores and time taken.
+    Main function. Calls the get_input() and get_scores_iterative() functions and prints the PageRank scores.
     &#34;&#34;&#34;
     graph, n_nodes, n_edges = get_input()
     start = time()
     pr = PageRank(graph, n_nodes, n_edges)
-    scores = pr.get_scores_iterative()
+    iter_scores = pr.get_scores_iterative()
+    eigen_scores = pr.get_scores_eigen()
     end = time()
-    print(&#34;PageRank scores: {} \nTime taken: {:.4f}s&#34;.format(scores, end - start))
+    print(&#34;Iterative PageRank scores: {}&#34;.format(iter_scores))
+    print(&#34;Eigen Value PageRank scores: {}&#34;.format(eigen_scores))
 
 if __name__ == &#39;__main__&#39;:
     main()</code></pre>
@@ -179,21 +215,23 @@ if __name__ == &#39;__main__&#39;:
 <span>def <span class="ident">main</span></span>(<span>)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Main function. Calls the get_input() and get_scores_iterative() functions and prints the PageRank scores and time taken.</p></div>
+<div class="desc"><p>Main function. Calls the get_input() and get_scores_iterative() functions and prints the PageRank scores.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def main():
     &#34;&#34;&#34;
-    Main function. Calls the get_input() and get_scores_iterative() functions and prints the PageRank scores and time taken.
+    Main function. Calls the get_input() and get_scores_iterative() functions and prints the PageRank scores.
     &#34;&#34;&#34;
     graph, n_nodes, n_edges = get_input()
     start = time()
     pr = PageRank(graph, n_nodes, n_edges)
-    scores = pr.get_scores_iterative()
+    iter_scores = pr.get_scores_iterative()
+    eigen_scores = pr.get_scores_eigen()
     end = time()
-    print(&#34;PageRank scores: {} \nTime taken: {:.4f}s&#34;.format(scores, end - start))</code></pre>
+    print(&#34;Iterative PageRank scores: {}&#34;.format(iter_scores))
+    print(&#34;Eigen Value PageRank scores: {}&#34;.format(eigen_scores))</code></pre>
 </details>
 </dd>
 </dl>
@@ -203,7 +241,7 @@ if __name__ == &#39;__main__&#39;:
 <dl>
 <dt id="pagerank.PageRank"><code class="flex name class">
 <span>class <span class="ident">PageRank</span></span>
-<span>(</span><span>graph, n_nodes, n_edges)</span>
+<span>(</span><span>graph, n_nodes, n_edges=None)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Given a graph with number of nodes and edges, perform the PageRank algorithm and return the scores.</p>
@@ -223,7 +261,7 @@ pageRankScores: PageRank scores of all the nodes in the graph.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class PageRank:
-    def __init__(self, graph, n_nodes, n_edges):
+    def __init__(self, graph, n_nodes, n_edges=None):
         &#34;&#34;&#34;
         Given a graph with number of nodes and edges, perform the PageRank algorithm and return the scores.
 
@@ -240,7 +278,7 @@ pageRankScores: PageRank scores of all the nodes in the graph.</p></div>
         self.n_edges = n_edges
         self.input_nodes = list(range(self.n_nodes))
 
-    def get_scores_iterative(self, alpha=0.85, epsilon=0.0000001):
+    def get_scores_iterative(self, alpha=0.1, epsilon=0.0000001):
         &#34;&#34;&#34;
         Calculate the PageRank scores of all the nodes in the graph iteratively.
 
@@ -276,12 +314,111 @@ pageRankScores: PageRank scores of all the nodes in the graph.</p></div>
         # Normalizing Page Rank Scores
         pageRankScores = pageRankScores / sum(pageRankScores)
 
+        return pageRankScores
+
+    def getLeftEigenVector(self, P):
+        &#34;&#34;&#34;
+        Calculate the left eigenvector of the matrix P.
+
+        Args:
+            P: Matrix of the graph.
+
+        Returns:
+            Left eigenvector of the matrix P.
+        &#34;&#34;&#34;
+        values, Vector = np.linalg.eig(np.array(P).T)
+        left_vec = Vector[:, 0].T
+        left_vec_norm = (left_vec/left_vec.sum()).real
+        return left_vec_norm
+
+    def get_scores_eigen(self, alpha = 0.1):
+        &#34;&#34;&#34;
+        Calculate the PageRank scores of all the nodes in the graph using the eigenvalue decomposition of the matrix.
+
+        Returns:
+            PageRank scores of all the nodes in the graph.
+        &#34;&#34;&#34;
+        # Calculating Page Rank Scores
+        # P = self.graph / np.sum(self.graph, axis=0)
+
+        M = self.graph / np.sum(self.graph, axis=0)
+
+        M = M * (1 - alpha)
+        M = M + (alpha/self.n_nodes)
+
+        left_vec = self.getLeftEigenVector(M)
+        pageRankScores = left_vec / sum(left_vec)
+
         return pageRankScores</code></pre>
 </details>
 <h3>Methods</h3>
 <dl>
+<dt id="pagerank.PageRank.getLeftEigenVector"><code class="name flex">
+<span>def <span class="ident">getLeftEigenVector</span></span>(<span>self, P)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Calculate the left eigenvector of the matrix P.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>P</code></strong></dt>
+<dd>Matrix of the graph.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>Left eigenvector of the matrix P.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def getLeftEigenVector(self, P):
+    &#34;&#34;&#34;
+    Calculate the left eigenvector of the matrix P.
+
+    Args:
+        P: Matrix of the graph.
+
+    Returns:
+        Left eigenvector of the matrix P.
+    &#34;&#34;&#34;
+    values, Vector = np.linalg.eig(np.array(P).T)
+    left_vec = Vector[:, 0].T
+    left_vec_norm = (left_vec/left_vec.sum()).real
+    return left_vec_norm</code></pre>
+</details>
+</dd>
+<dt id="pagerank.PageRank.get_scores_eigen"><code class="name flex">
+<span>def <span class="ident">get_scores_eigen</span></span>(<span>self, alpha=0.1)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Calculate the PageRank scores of all the nodes in the graph using the eigenvalue decomposition of the matrix.</p>
+<h2 id="returns">Returns</h2>
+<p>PageRank scores of all the nodes in the graph.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_scores_eigen(self, alpha = 0.1):
+    &#34;&#34;&#34;
+    Calculate the PageRank scores of all the nodes in the graph using the eigenvalue decomposition of the matrix.
+
+    Returns:
+        PageRank scores of all the nodes in the graph.
+    &#34;&#34;&#34;
+    # Calculating Page Rank Scores
+    # P = self.graph / np.sum(self.graph, axis=0)
+
+    M = self.graph / np.sum(self.graph, axis=0)
+
+    M = M * (1 - alpha)
+    M = M + (alpha/self.n_nodes)
+
+    left_vec = self.getLeftEigenVector(M)
+    pageRankScores = left_vec / sum(left_vec)
+
+    return pageRankScores</code></pre>
+</details>
+</dd>
 <dt id="pagerank.PageRank.get_scores_iterative"><code class="name flex">
-<span>def <span class="ident">get_scores_iterative</span></span>(<span>self, alpha=0.85, epsilon=1e-07)</span>
+<span>def <span class="ident">get_scores_iterative</span></span>(<span>self, alpha=0.1, epsilon=1e-07)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Calculate the PageRank scores of all the nodes in the graph iteratively.</p>
@@ -298,7 +435,7 @@ pageRankScores: PageRank scores of all the nodes in the graph.</p></div>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def get_scores_iterative(self, alpha=0.85, epsilon=0.0000001):
+<pre><code class="python">def get_scores_iterative(self, alpha=0.1, epsilon=0.0000001):
     &#34;&#34;&#34;
     Calculate the PageRank scores of all the nodes in the graph iteratively.
 
@@ -359,6 +496,8 @@ pageRankScores: PageRank scores of all the nodes in the graph.</p></div>
 <li>
 <h4><code><a title="pagerank.PageRank" href="#pagerank.PageRank">PageRank</a></code></h4>
 <ul class="">
+<li><code><a title="pagerank.PageRank.getLeftEigenVector" href="#pagerank.PageRank.getLeftEigenVector">getLeftEigenVector</a></code></li>
+<li><code><a title="pagerank.PageRank.get_scores_eigen" href="#pagerank.PageRank.get_scores_eigen">get_scores_eigen</a></code></li>
 <li><code><a title="pagerank.PageRank.get_scores_iterative" href="#pagerank.PageRank.get_scores_iterative">get_scores_iterative</a></code></li>
 </ul>
 </li>

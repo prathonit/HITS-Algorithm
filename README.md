@@ -1,9 +1,9 @@
 # Information Retrieval Assignment 2
 
 ### Group Members
-- Sathvik Bhaskarpandit
-- Kaustubh Bhanj
-- Prathmesh Srivasthava
+- Sathvik Bhaskarpandit (2019A7PS1200H)
+- Prathmesh Srivasthava (2019A7PS1322H)
+- Kaustubh Bhanj (2019A7PS0009H)
 
 ### Input Graph
 Navigate to the source folder and type in the graph in the graph.txt file. 
