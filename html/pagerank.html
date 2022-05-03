@@ -28,6 +28,7 @@
 </summary>
 <pre><code class="python">import numpy as np
 from time import time
+from utils import get_input
 
 class PageRank:
     def __init__(self, graph, n_nodes, n_edges=None):
@@ -62,7 +63,6 @@ class PageRank:
         # Intialize  matrix
         M = self.graph / np.sum(self.graph, axis=0)
 
-        # InitializeTeleportation matrix and Page Rank Scores with Zeros for all graph nodes
         teleportation_matrix = np.zeros(self.n_nodes)
         pageRankScores = np.zeros(self.n_nodes)
 
@@ -81,7 +81,7 @@ class PageRank:
                 break
 
         # Normalizing Page Rank Scores
-        pageRankScores = pageRankScores / sum(pageRankScores)
+        pageRankScores = pageRankScores / np.sum(pageRankScores)
 
         return pageRankScores
 
@@ -118,47 +118,7 @@ class PageRank:
         left_vec = self.getLeftEigenVector(M)
         pageRankScores = left_vec / sum(left_vec)
 
-        return pageRankScores
-
-def get_input():
-    &#34;&#34;&#34;
-    Reads the input from input file and returns the graph, number of nodes and number of edges.
-
-    Returns:
-        graph: Adjacency matrix of the graph.
-        n_nodes: Number of nodes in the graph.
-        n_edges: Number of edges in the graph.
-    &#34;&#34;&#34;
-    with open(&#34;graph.txt&#34;) as f:
-        for lno, line in enumerate(f):
-            # print(lno, line)
-            if lno == 0:
-                n_nodes = int(line)
-                graph = [[0 for _ in range(n_nodes)] for _ in range(n_nodes)]
-            elif lno == 1:
-                n_edges = int(line)
-            else:
-                u, v = line.split(&#39;,&#39;)
-                u, v = int(u) - 1, int(v) - 1
-                graph[u][v] = 1
-    
-    return np.array(graph), n_nodes, n_edges
-
-def main():
-    &#34;&#34;&#34;
-    Main function. Calls the get_input() and get_scores_iterative() functions and prints the PageRank scores.
-    &#34;&#34;&#34;
-    graph, n_nodes, n_edges = get_input()
-    start = time()
-    pr = PageRank(graph, n_nodes, n_edges)
-    iter_scores = pr.get_scores_iterative()
-    eigen_scores = pr.get_scores_eigen()
-    end = time()
-    print(&#34;Iterative PageRank scores: {}&#34;.format(iter_scores))
-    print(&#34;Eigen Value PageRank scores: {}&#34;.format(eigen_scores))
-
-if __name__ == &#39;__main__&#39;:
-    main()</code></pre>
+        return pageRankScores</code></pre>
 </details>
 </section>
 <section>
@@ -166,75 +126,6 @@ if __name__ == &#39;__main__&#39;:
 <section>
 </section>
 <section>
-<h2 class="section-title" id="header-functions">Functions</h2>
-<dl>
-<dt id="pagerank.get_input"><code class="name flex">
-<span>def <span class="ident">get_input</span></span>(<span>)</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Reads the input from input file and returns the graph, number of nodes and number of edges.</p>
-<h2 id="returns">Returns</h2>
-<dl>
-<dt><code>graph</code></dt>
-<dd>Adjacency matrix of the graph.</dd>
-<dt><code>n_nodes</code></dt>
-<dd>Number of nodes in the graph.</dd>
-<dt><code>n_edges</code></dt>
-<dd>Number of edges in the graph.</dd>
-</dl></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def get_input():
-    &#34;&#34;&#34;
-    Reads the input from input file and returns the graph, number of nodes and number of edges.
-
-    Returns:
-        graph: Adjacency matrix of the graph.
-        n_nodes: Number of nodes in the graph.
-        n_edges: Number of edges in the graph.
-    &#34;&#34;&#34;
-    with open(&#34;graph.txt&#34;) as f:
-        for lno, line in enumerate(f):
-            # print(lno, line)
-            if lno == 0:
-                n_nodes = int(line)
-                graph = [[0 for _ in range(n_nodes)] for _ in range(n_nodes)]
-            elif lno == 1:
-                n_edges = int(line)
-            else:
-                u, v = line.split(&#39;,&#39;)
-                u, v = int(u) - 1, int(v) - 1
-                graph[u][v] = 1
-    
-    return np.array(graph), n_nodes, n_edges</code></pre>
-</details>
-</dd>
-<dt id="pagerank.main"><code class="name flex">
-<span>def <span class="ident">main</span></span>(<span>)</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Main function. Calls the get_input() and get_scores_iterative() functions and prints the PageRank scores.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def main():
-    &#34;&#34;&#34;
-    Main function. Calls the get_input() and get_scores_iterative() functions and prints the PageRank scores.
-    &#34;&#34;&#34;
-    graph, n_nodes, n_edges = get_input()
-    start = time()
-    pr = PageRank(graph, n_nodes, n_edges)
-    iter_scores = pr.get_scores_iterative()
-    eigen_scores = pr.get_scores_eigen()
-    end = time()
-    print(&#34;Iterative PageRank scores: {}&#34;.format(iter_scores))
-    print(&#34;Eigen Value PageRank scores: {}&#34;.format(eigen_scores))</code></pre>
-</details>
-</dd>
-</dl>
 </section>
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
@@ -293,7 +184,6 @@ pageRankScores: PageRank scores of all the nodes in the graph.</p></div>
         # Intialize  matrix
         M = self.graph / np.sum(self.graph, axis=0)
 
-        # InitializeTeleportation matrix and Page Rank Scores with Zeros for all graph nodes
         teleportation_matrix = np.zeros(self.n_nodes)
         pageRankScores = np.zeros(self.n_nodes)
 
@@ -312,7 +202,7 @@ pageRankScores: PageRank scores of all the nodes in the graph.</p></div>
                 break
 
         # Normalizing Page Rank Scores
-        pageRankScores = pageRankScores / sum(pageRankScores)
+        pageRankScores = pageRankScores / np.sum(pageRankScores)
 
         return pageRankScores
 
@@ -450,7 +340,6 @@ pageRankScores: PageRank scores of all the nodes in the graph.</p></div>
     # Intialize  matrix
     M = self.graph / np.sum(self.graph, axis=0)
 
-    # InitializeTeleportation matrix and Page Rank Scores with Zeros for all graph nodes
     teleportation_matrix = np.zeros(self.n_nodes)
     pageRankScores = np.zeros(self.n_nodes)
 
@@ -469,7 +358,7 @@ pageRankScores: PageRank scores of all the nodes in the graph.</p></div>
             break
 
     # Normalizing Page Rank Scores
-    pageRankScores = pageRankScores / sum(pageRankScores)
+    pageRankScores = pageRankScores / np.sum(pageRankScores)
 
     return pageRankScores</code></pre>
 </details>
@@ -485,12 +374,6 @@ pageRankScores: PageRank scores of all the nodes in the graph.</p></div>
 <ul></ul>
 </div>
 <ul id="index">
-<li><h3><a href="#header-functions">Functions</a></h3>
-<ul class="">
-<li><code><a title="pagerank.get_input" href="#pagerank.get_input">get_input</a></code></li>
-<li><code><a title="pagerank.main" href="#pagerank.main">main</a></code></li>
-</ul>
-</li>
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
 <li>

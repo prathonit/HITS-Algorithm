@@ -11,14 +11,14 @@ Navigate to the source folder and type in the graph in the graph.txt file.
 - The second line contains number of edges (n_edges)
 - The following *n_edges* lines contain the directed edges with the node numbers separated by a comma
 
-Note that the node numbers range from 0 to *n_nodes*-1
+Note that the node numbers range from 1 to *n_nodes*
 
 ### Running the Page Rank Algorithm
 Run the following command in a terminal
 ```
-python pagerank.py
+python main.py
 ```
 The value of error threshold and alpha can be edited in the pagerank.py file
 
 The pagerank scores will be outputted as an array in the console.
-The time to run the algorithm will also be printed
+
