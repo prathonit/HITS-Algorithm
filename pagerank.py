@@ -1,5 +1,6 @@
 import numpy as np
 from time import time
+from utils import get_input
 
 class PageRank:
     def __init__(self, graph, n_nodes, n_edges=None):
@@ -34,7 +35,6 @@ class PageRank:
         # Intialize  matrix
         M = self.graph / np.sum(self.graph, axis=0)
 
-        # InitializeTeleportation matrix and Page Rank Scores with Zeros for all graph nodes
         teleportation_matrix = np.zeros(self.n_nodes)
         pageRankScores = np.zeros(self.n_nodes)
 
@@ -53,7 +53,7 @@ class PageRank:
                 break
 
         # Normalizing Page Rank Scores
-        pageRankScores = pageRankScores / sum(pageRankScores)
+        pageRankScores = pageRankScores / np.sum(pageRankScores)
 
         return pageRankScores
 
@@ -92,42 +92,4 @@ class PageRank:
 
         return pageRankScores
 
-def get_input():
-    """
-    Reads the input from input file and returns the graph, number of nodes and number of edges.
 
-    Returns:
-        graph: Adjacency matrix of the graph.
-        n_nodes: Number of nodes in the graph.
-        n_edges: Number of edges in the graph.
-    """
-    with open("graph.txt") as f:
-        for lno, line in enumerate(f):
-            # print(lno, line)
-            if lno == 0:
-                n_nodes = int(line)
-                graph = [[0 for _ in range(n_nodes)] for _ in range(n_nodes)]
-            elif lno == 1:
-                n_edges = int(line)
-            else:
-                u, v = line.split(',')
-                u, v = int(u) - 1, int(v) - 1
-                graph[u][v] = 1
-    
-    return np.array(graph), n_nodes, n_edges
-
-def main():
-    """
-    Main function. Calls the get_input() and get_scores_iterative() functions and prints the PageRank scores.
-    """
-    graph, n_nodes, n_edges = get_input()
-    start = time()
-    pr = PageRank(graph, n_nodes, n_edges)
-    iter_scores = pr.get_scores_iterative()
-    eigen_scores = pr.get_scores_eigen()
-    end = time()
-    print("Iterative PageRank scores: {}".format(iter_scores))
-    print("Eigen Value PageRank scores: {}".format(eigen_scores))
-
-if __name__ == '__main__':
-    main()
